@@ -80,7 +80,11 @@ def module_to_javascript(module, namespace, func_mapper=None, **kwargs):
     with open(tmp_file, 'w') as f:
         f.write(template)
     # Do the transcrypt.
-    output = subprocess.check_output(['transcrypt', '-b', tmp_file])
+    try:
+        output = subprocess.check_output(['transcrypt', '-b', tmp_file], env=os.environ.copy())
+    except subprocess.CalledProcessError as e:
+        print(e.output)
+        raise e
     shutil.rmtree(dst_dir, ignore_errors=True)
     shutil.move(os.path.join(tmp_dir, "__target__"), dst_dir)
     # Write index.

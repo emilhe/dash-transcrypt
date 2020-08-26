@@ -2,6 +2,8 @@
 
 Dash transcrypt translates Python code into JavaScript using the [transcrypt](https://www.transcrypt.org/) library. 
 
+NB: Java must be install for this library to work (it's required in the transcypt minification process). 
+
 ## Clientside callbacks
 
 One of the main use cases for transpiling is clientside callbacks (which are usually written in JavaScript). The functions to be transpiled must be placed in a separate module (file), say `logic.py`. In this example, we will consider a simple `add` function,
