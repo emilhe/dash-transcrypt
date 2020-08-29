@@ -68,12 +68,12 @@ def module_to_javascript(module, namespace, func_mapper=None, **kwargs):
     # Inject kwargs.
     with open(module.__file__, 'r') as f:
         template = f.read()
-    pattern = r"\n\w+\s*=\s*.*\s#\s*<kwarg>"
+    pattern = r"\w+\s*=\s*.*\s#\s*<kwarg>"
     matches = re.findall(pattern, template)
     for match in matches:
-        key = match[1:].split("=")[0].strip()
+        key = match.split("=")[0].strip()
         if key in kwargs:
-            template = template.replace(match, f"\n{key} = {kwargs[key]}  # <injected>")
+            template = template.replace(match, f"{key} = {json.dumps(kwargs[key])}  # <injected>")
     # Write to tmp dir.
     tmp_dir = tempfile.mkdtemp()
     tmp_file = os.path.join(tmp_dir, f"{module_name}.py")
