@@ -14,9 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 12
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -31,7 +28,5 @@ jobs:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        npm install | echo "Ignore npm install error"
-        npm run build:all
         python setup.py sdist bdist_wheel
         twine upload dist/*
