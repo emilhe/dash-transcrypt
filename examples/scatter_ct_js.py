@@ -1,6 +1,5 @@
-scale = 100  # <kwarg>
-radius_property = "population"  # <kwarg>
+scale = 10  # <kwarg>
 
 def point_to_layer(feature, latlng, context):
-    radius = feature.properties[radius_property] ** 0.5 / scale
+    radius = feature.properties.value * scale
     return L.circleMarker(latlng, dict(radius=radius))
