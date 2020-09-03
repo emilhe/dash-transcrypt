@@ -3,13 +3,13 @@ import json
 import os
 import re
 import subprocess
-import shutil
 import tempfile
 import logging
 
 from string import Template
 from dash.dependencies import ClientsideFunction
 from flask import send_from_directory
+from distutils.dir_util import copy_tree
 
 
 _main_template = Template("""import {$funcs} from './$module.js'
@@ -86,8 +86,7 @@ def module_to_javascript(module, namespace, func_mapper=None, **kwargs):
     except subprocess.CalledProcessError as e:
         print(e.output)
         raise e
-    # shutil.rmtree(dst_dir, ignore_errors=True)
-    shutil.copytree(os.path.join(tmp_dir, "__target__"), dst_dir, dirs_exist_ok=True)
+    copy_tree(os.path.join(tmp_dir, "__target__"), dst_dir)
     # Write index.
     with open(f"{dst_dir}/{index_file}", 'w') as f:
         f.write(_main_template.substitute(funcs=",".join(funcs), module=module_name, namespace=namespace))
