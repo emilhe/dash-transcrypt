@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="dash-transcrypt",
-    version="0.0.4",
+    version="0.0.5",
     author="Emil Haldrup Eriksen",
     packages=["dash_transcrypt"],
     url="https://github.com/thedirtyfew/dash-transcrypt/",

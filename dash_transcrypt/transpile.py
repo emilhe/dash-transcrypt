@@ -5,6 +5,7 @@ import re
 import subprocess
 import shutil
 import tempfile
+import logging
 
 from string import Template
 from dash.dependencies import ClientsideFunction
@@ -85,8 +86,8 @@ def module_to_javascript(module, namespace, func_mapper=None, **kwargs):
     except subprocess.CalledProcessError as e:
         print(e.output)
         raise e
-    shutil.rmtree(dst_dir, ignore_errors=True)
-    shutil.move(os.path.join(tmp_dir, "__target__"), dst_dir)
+    # shutil.rmtree(dst_dir, ignore_errors=True)
+    shutil.copytree(os.path.join(tmp_dir, "__target__"), dst_dir, dirs_exist_ok=True)
     # Write index.
     with open(f"{dst_dir}/{index_file}", 'w') as f:
         f.write(_main_template.substitute(funcs=",".join(funcs), module=module_name, namespace=namespace))
@@ -101,9 +102,12 @@ def inject_js(dash_app, index_path):
     js_fn = os.path.basename(index_path)
     js_dir = os.path.basename(os.path.dirname(index_path))
 
-    @dash_app.server.route(f'/{js_dir}/<path:path>', methods=['GET'])
-    def send_js(path):  # pragma: no cover
-        return send_from_directory(os.path.dirname(index_path), path)
+    try:
+        @dash_app.server.route(f'/{js_dir}/<path:path>', methods=['GET'])
+        def send_js(path):  # pragma: no cover
+            return send_from_directory(os.path.dirname(index_path), path)
+    except AssertionError:
+        logging.getLogger().info("Failed to register send_js")
 
     script_tag = f"<script type='module' src='/{js_dir}/{js_fn}'></script>\n            {{%scripts%}}"
     dash_app.index_string = dash_app.index_string.replace("{%scripts%}", script_tag)

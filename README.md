@@ -1,4 +1,3 @@
-
 The purpose of dash-transcrypt is making it easy to
 
 * Write clientside callbacks in Python 
